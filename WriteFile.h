@@ -1,6 +1,6 @@
 #if !defined WRITE_FILE
 #define WRITE_FILE
-
+//thisisatest
 #include "Text.h"
 
 #include <fstream>
