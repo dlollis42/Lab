@@ -1,46 +1,56 @@
+/*  
+	Name: Dustin Ollis & 
+	Program: ReadFile.cpp 
+	Date: 1 Sep 2016
+	Purpose: Change STRUCT to class for ReadFile and WriteFile.
+*/
+
 #include "ReadFile.h"
-#include <iostream>
-#include <string>
-// added a comment
-ReadFile* createReadFile(const char* file_name)
+
+#include <iostream>	
+#include <string>	//used for readLine data.
+//Constructor derived directly from struct code, modified slightly to remove the unneeded "rf->" designation.
+ReadFile::ReadFile(const char* file_name)
 {
-   ReadFile* rf = new ReadFile;
-
-   rf->input_file.open(file_name);
-   rf->closed = false;
-   rf->_eof = false;
-
-   return rf;
+	//Driver makes the new ReadFile, so we don't need to.
+   input_file.open(file_name);	
+	closed = false;
+	_eof = false;
+	//No need to return, because it's built in.
 }
 
-void destroyReadFile(ReadFile* rf)
+ ReadFile::~ReadFile()
 {
-   close(rf);
-   delete rf;
+   this->close(); //Simply close the file using the function we have.
+   //In the struct version this has a delete included, but we were getting full program crashes pertaining to deleting something that 
+   //didn't exist, so that must imply the act of calling a deconstructor does it for us.
 }
-
-bool eof(ReadFile* rf)
+ 
+void ReadFile::close()
 {
-   return rf->_eof;
-}
-
-void close(ReadFile* rf)
-{
-   if (!rf->closed)
+   if (!closed)	//if the value of closed isn't already true
    {
-      rf->input_file.close();
-      rf->closed = true;
+      input_file.close();	//Use the fstream close on the file.
+      closed = true;		//set it to true, so we don't try to close the file again
    }
+   //no return because of void, and it is unneeded.
+} 
+
+bool ReadFile::eof()
+{
+   return this->_eof;
 }
 
-String* readLine(ReadFile* rf)
+String* ReadFile::readLine()
 {
-   if (rf->closed) return NULL;
-   if (rf->_eof) return NULL;
+   if (closed) return NULL;
+   if (_eof) return NULL;
 
    string text;
-   rf->_eof = !(getline(rf->input_file, text));
+   this->_eof = !(getline(this->input_file, text));
 
    String* str = new String((const char*) text.c_str());
    return str;
+
 }
+
